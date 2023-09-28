@@ -35,17 +35,17 @@ def handle_events():
             global cursor_x, cursor_y
             cursor_x, cursor_y = event.x, 1024 - 1 - event.y
 
-while running:
-    handle_events()
-
-    clear_canvas()
-    
+def draw():
+    global frame, d
     background.draw(640, 512)
     for t in target_list:
         hand_arrow.draw(t[0], t[1])
     hand_arrow.draw(cursor_x, cursor_y)
     character.clip_draw(frame * 100, 100 * d, 100, 100, x, y)
+    frame = (frame + 1) % 8
 
+def move():
+    global x, y, target_x, target_y, move_count, start_x, start_y, d
     if target_x == None or target_y == None:
         if len(target_list) > 0:
             target_x, target_y = target_list[0]
@@ -60,10 +60,16 @@ while running:
             target_list.pop(0)
             start_x, start_y = target_x, target_y
             target_x, target_y = None, None
-    
+
+while running:
+    handle_events()
+
+    clear_canvas()
+    draw()
     update_canvas()
     
-    frame = (frame + 1) % 8
+    move()
+    
     delay(0.05)
 
 
